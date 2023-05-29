@@ -6,6 +6,13 @@
   <version>1.0-SNAPSHOT</version>
   <name>Archetype - sahaabino</name>
   <url>http://maven.apache.org</url>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+      <version>7.0.1-ccs</version>
+    </dependency>
+  </dependencies>
   <build>
     <plugins>
       <plugin>
