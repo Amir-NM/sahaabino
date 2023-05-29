@@ -32,4 +32,8 @@ public class LogFormat {
         LocalDateTime dateTime = LocalDateTime.parse(logArray[this.datetimeIndex], formatter);
         return new Log(dateTime, logArray[this.typeIndex], logArray[this.msgIndex]);
     }
+
+    public String getDatetimePattern() {
+        return datetimePattern;
+    }
 }
