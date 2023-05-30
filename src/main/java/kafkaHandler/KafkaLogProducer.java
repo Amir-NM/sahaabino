@@ -13,13 +13,13 @@ import java.time.LocalDateTime;
 import java.util.Properties;
 
 public class KafkaLogProducer {
-    private final Properties properties;
+    private final Producer<Integer, String> producer;
     private final String topic;
     private int producedCount;
     private Gson gson;
 
     public KafkaLogProducer(String propsDir, String topic) throws IOException {
-        this.properties = KafkaConfigLoader.getInstance().loadProps(propsDir);
+        this.producer = new KafkaProducer<>(KafkaConfigLoader.getInstance().loadProps(propsDir));
         this.topic = topic;
         this.producedCount = 0;
     }
@@ -29,16 +29,14 @@ public class KafkaLogProducer {
     }
 
     public void produce(Log log) {
-        try (final Producer<Integer, String> producer = new KafkaProducer<>(this.properties)) {
-            producer.send(
-                    new ProducerRecord<>(this.topic, this.producedCount, gson.toJson(log)),
-                    (event, ex) -> {
-                        if (ex != null)
-                            ex.printStackTrace();
-                        else
-                            System.out.println("Produced log to topic: log " + this.producedCount);
-                    });
+        this.producer.send(
+                new ProducerRecord<>(this.topic, this.producedCount, this.gson.toJson(log)),
+                (event, ex) -> {
+                    if (ex != null)
+                        ex.printStackTrace();
+                    else
+                        System.out.println("Produced log to topic: log " + this.producedCount);
+                });
             this.producedCount++;
-        }
     }
 }
