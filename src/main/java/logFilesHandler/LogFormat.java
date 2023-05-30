@@ -26,11 +26,11 @@ public class LogFormat {
         sc.close();
     }
 
-    public Log formLog(String logString) {
+    public Log formLog(String componentName, String logString) {
         String[] logArray = logString.split(this.separator);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(this.datetimePattern);
         LocalDateTime dateTime = LocalDateTime.parse(logArray[this.datetimeIndex], formatter);
-        return new Log(dateTime, logArray[this.typeIndex], logArray[this.msgIndex]);
+        return new Log(componentName, dateTime, logArray[this.typeIndex], logArray[this.msgIndex]);
     }
 
     public String getDatetimePattern() {

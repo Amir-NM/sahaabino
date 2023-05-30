@@ -18,7 +18,7 @@ public class LogFileProcessor {
         File logFile = new File(logFileDir);
         Scanner sc = new Scanner(logFile);
         while (sc.hasNext()) {
-            Log log = logFormat.formLog(sc.nextLine());
+            Log log = logFormat.formLog(logFile.getName().split("-")[0], sc.nextLine());
             this.kafkaLogProducer.produce(log);
         }
         logFile.delete();
