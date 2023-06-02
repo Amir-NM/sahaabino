@@ -4,6 +4,7 @@ import ir.amir.rule.FirstRuleType;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import ir.amir.log.Log;
+import ir.amir.rule.Rule;
 import org.apache.kafka.clients.consumer.*;
 
 import java.io.IOException;
@@ -17,9 +18,9 @@ public class KafkaLogConsumer {
     private final String topic;
     private final Gson gson;
 
-    private final FirstRuleType[] alertRules;
+    private final Rule[] alertRules;
 
-    public KafkaLogConsumer(String propsDir, String topic, FirstRuleType[] alertRules) throws IOException {
+    public KafkaLogConsumer(String propsDir, String topic, Rule[] alertRules) throws IOException {
         Properties props = KafkaConfigLoader.getInstance().loadProps(propsDir);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "kafka-java-getting-started");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
@@ -36,7 +37,7 @@ public class KafkaLogConsumer {
             for (ConsumerRecord<Integer, String> record : records) {
                 System.out.println("Consumed log: " + record.value());
                 Log log = this.gson.fromJson(record.value(), Log.class);
-                for(FirstRuleType alertRule : this.alertRules) {
+                for(Rule alertRule : this.alertRules) {
                     alertRule.processLog(log);
                 }
             }

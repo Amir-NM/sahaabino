@@ -41,7 +41,7 @@ public class KafkaLogProducer {
                     if (ex != null)
                         ex.printStackTrace();
                     else
-                        System.out.println("Produced log: " + logString);
+                        logger.info("Produced log: " + logString);
                 });
         this.producedCount++;
         logger.trace("log produced to kafka: " + log);
