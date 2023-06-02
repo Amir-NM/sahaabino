@@ -9,7 +9,7 @@ import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * this service reads files path from queue and process files to extract records and send records to another queue
+ * this service reads files path from queue and process files to extract records and send records to another queue.
  */
 public class RecordExtractorService extends Thread {
     private boolean shouldEnd;
@@ -25,7 +25,7 @@ public class RecordExtractorService extends Thread {
     }
 
     public void run() {
-        while (!this.shouldEnd && !this.shareFilePath.isEmpty()) {
+        while (!this.shouldEnd || !this.shareFilePath.isEmpty()) {
             String filePath = "";
             try {
                 filePath = this.shareFilePath.take();

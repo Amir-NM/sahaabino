@@ -1,10 +1,5 @@
 package ir.amir.ingestor;
 
-import ir.amir.kafka.KafkaLogProducer;
-import ir.amir.log.LogFileProcessor;
-import ir.amir.log.LogFormat;
-import org.apache.kafka.common.utils.Exit;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.*;
@@ -12,7 +7,7 @@ import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * this service watches the specified directory to send new files path in its queue
+ * this service watches the specified directory to send new files path in its queue.
  */
 public class FileWatcherService extends Thread {
     private boolean shouldEnd;
