@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * this service watches the specified directory to send new files path in its queue.
+ * this service watches the specified directory to sends new files path in its queue.
  */
 public class FileWatcherService extends Thread {
     private final Logger logger;

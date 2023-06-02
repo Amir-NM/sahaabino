@@ -11,6 +11,10 @@ import java.io.InputStream;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+/**
+ * this is the main class of the file evaluator component.
+ * it instantiates the three services KafkaConsumerService, AlertExtractorService and DatabaseSaverService and runs them concurrently.
+ */
 public class RuleEvaluatorMain {
     private static final String ruleEvaluatorConfDir = "rule-evaluator.yaml";
 

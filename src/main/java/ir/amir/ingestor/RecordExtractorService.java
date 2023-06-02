@@ -13,7 +13,7 @@ import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * this service reads files path from queue and process files to extract records and send records to another queue.
+ * this service receives files path from queue and processes files to extract records and sends records to another queue.
  */
 public class RecordExtractorService extends Thread {
     private final Logger logger;

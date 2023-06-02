@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * this service reads records from queue and produces them to kafka topic.
+ * this service receives records from queue and produces them to kafka topic.
  */
 public class KafkaProducerService extends Thread {
     private final Logger logger;

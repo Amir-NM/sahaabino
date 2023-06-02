@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
+/**
+ * this service receives logs from queue and extract alerts from them. then sends alerts to another queue.
+ */
 public class AlertExtractorService extends Thread {
     private final Logger logger;
     private boolean shouldEnd;

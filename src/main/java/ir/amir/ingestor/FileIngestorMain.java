@@ -14,7 +14,7 @@ import java.util.concurrent.BlockingQueue;
 
 /**
  * this is the main class of the file ingestor component.
- * it instantiates the three services FileWatcherService, RecordExtractorService and KafkaProducerServices and run them concurrently.
+ * it instantiates the three services FileWatcherService, RecordExtractorService and KafkaProducerService and runs them concurrently.
  */
 public class FileIngestorMain {
     private static final String ingestorConfPath = "file-ingestor.yaml";

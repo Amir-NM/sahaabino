@@ -12,6 +12,9 @@ import java.sql.SQLException;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 
+/**
+ * this service receives alerts from queue and saves them to database.
+ */
 public class DatabaseSaverService extends Thread {
     private final Logger logger;
     private boolean shouldEnd;

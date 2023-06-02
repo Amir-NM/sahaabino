@@ -17,6 +17,9 @@ import java.util.Collections;
 import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 
+/**
+ * this service consumes logs from kafka topic and sends them to queue.
+ */
 public class KafkaConsumerService extends Thread {
     private final Logger logger;
     private boolean shouldEnd;
