@@ -5,25 +5,22 @@ import ir.amir.rest.Alert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 
 /**
  * this service receives alerts from queue and saves them to database.
  */
-public class DatabaseSaverService extends Thread {
-    private static final Logger logger = LoggerFactory.getLogger(DatabaseSaverService.class);
+public class DatabaseService extends Thread {
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseService.class);
     private boolean shouldEnd;
     private final String databaseURL;
     private final String databaseUser;
     private final String databasePassword;
     private final BlockingQueue<Alert> shareAlert;
 
-    public DatabaseSaverService(DatabaseSaverConfig config, BlockingQueue<Alert> shareAlert) {
+    public DatabaseService(DatabaseSaverConfig config, BlockingQueue<Alert> shareAlert) {
         this.shareAlert = shareAlert;
         this.databaseURL = config.getDatabaseURL();
         this.databaseUser = config.getDatabaseUsername();
@@ -55,8 +52,26 @@ public class DatabaseSaverService extends Thread {
                 connection.close();
                 logger.info("Alert saved to database.");
             } catch (SQLException e) {
+                logger.error("Could not insert to database.");
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public int getAlertsCount() {
+        int count = 0;
+        try {
+            Connection connection = DriverManager.getConnection(this.databaseURL, this.databaseUser, this.databasePassword);
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("select count(*) from alert;");
+            if (resultSet.next())
+                count = resultSet.getInt(1);
+            connection.close();
+            logger.info("Alert saved to database.");
+        } catch (SQLException e) {
+            logger.error("Could not get count of alerts from database.");
+            throw new RuntimeException(e);
+        }
+        return count;
     }
 }

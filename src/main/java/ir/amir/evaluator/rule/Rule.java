@@ -19,4 +19,8 @@ public abstract class Rule {
         totalCreatedAlertsCount++;
         return totalCreatedAlertsCount;
     }
+
+    public static void setTotalCreatedAlertsCount(int totalCreatedAlertsCount) {
+        Rule.totalCreatedAlertsCount = totalCreatedAlertsCount;
+    }
 }

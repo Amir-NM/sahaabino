@@ -1,6 +1,7 @@
 package ir.amir.evaluator;
 
 import ir.amir.evaluator.config.RuleEvaluatorConfig;
+import ir.amir.evaluator.rule.Rule;
 import ir.amir.ingestor.FileIngestorMain;
 import ir.amir.log.Log;
 import ir.amir.rest.Alert;
@@ -28,7 +29,9 @@ public class RuleEvaluatorMain {
 
         KafkaConsumerService kafkaConsumerService = new KafkaConsumerService(config.getKafkaConfig(), shareLog);
         AlertExtractorService alertExtractorService = new AlertExtractorService(config.getAlertExtractorConfig(), shareLog, shareAlert);
-        DatabaseSaverService databaseSaverService = new DatabaseSaverService(config.getDatabaseSaverConfig(), shareAlert);
+        DatabaseService databaseSaverService = new DatabaseService(config.getDatabaseSaverConfig(), shareAlert);
+
+        Rule.setTotalCreatedAlertsCount(databaseSaverService.getAlertsCount());
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             kafkaConsumerService.interrupt();
