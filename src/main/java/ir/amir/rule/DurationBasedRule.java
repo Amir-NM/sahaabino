@@ -10,8 +10,8 @@ public abstract class DurationBasedRule extends Rule {
     protected final double duration;
     protected final HashMap<String, ArrayList<Log>> componentsRecentLogs;
 
-    public DurationBasedRule(String ruleName, String ruleDescription, AlertSaver alertSaver, double duration) {
-        super(ruleName, ruleDescription, alertSaver);
+    public DurationBasedRule(String ruleName, String ruleDescription, double duration) {
+        super(ruleName, ruleDescription);
         this.duration = duration;
         this.componentsRecentLogs = new HashMap<>();
     }

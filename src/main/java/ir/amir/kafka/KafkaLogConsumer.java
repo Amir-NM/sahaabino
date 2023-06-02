@@ -1,6 +1,5 @@
 package ir.amir.kafka;
 
-import ir.amir.rule.FirstRuleType;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import ir.amir.log.Log;
