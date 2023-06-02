@@ -1,0 +1,9 @@
+fileWatcherConfig:
+  directoryPath: "src/main/resources/logs-dir"
+recordExtractorConfig:
+  separator: "--"
+  dateTimePattern: "yyyy-MM-dd HH:mm:ss"
+  logFormat: "DATETIME--TYPE--MSG"
+kafkaProducerConfig:
+  kafkaConfPath: "src/main/resources/kafka.conf"
+  kafkaTopic: "logs"

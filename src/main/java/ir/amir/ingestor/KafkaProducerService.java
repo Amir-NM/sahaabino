@@ -1,8 +1,10 @@
 package ir.amir.ingestor;
 
+import ir.amir.ingestor.config.KafkaProducerConfig;
 import ir.amir.kafka.KafkaLogProducer;
 import ir.amir.log.Log;
 
+import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -13,9 +15,14 @@ public class KafkaProducerService extends Thread {
     private final BlockingQueue<Log> shareLog;
     private final KafkaLogProducer kafkaLogProducer;
 
-    public KafkaProducerService(BlockingQueue<Log> shareLog, KafkaLogProducer kafkaLogProducer) {
+    public KafkaProducerService(KafkaProducerConfig config, BlockingQueue<Log> shareLog) throws IOException {
         this.shareLog = shareLog;
-        this.kafkaLogProducer = kafkaLogProducer;
+        try {
+            this.kafkaLogProducer = new KafkaLogProducer(config.getKafkaConfPath(), config.getKafkaTopic());
+        } catch (IOException e) {
+            // todo: log
+            throw e;
+        }
         this.shouldEnd = false;
     }
 

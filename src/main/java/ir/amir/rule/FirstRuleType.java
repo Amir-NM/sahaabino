@@ -17,7 +17,8 @@ public class FirstRuleType extends Rule {
     @Override
     public void processLog(Log log) {
         if(log.isOfType(this.logsType)) {
-            Alert alert = new Alert(addTotalCreatedAlertsCount(), this.ruleName, log.getComponentName(), this.ruleDescription + " | log message: " + log.getMsg());
+            Alert alert = new Alert(addTotalCreatedAlertsCount(), this.ruleName, log.getComponentName(),
+                    this.ruleDescription + " | log type: " + this.logsType + " | log message: " + log.getMsg());
             try {
                 this.alertSaver.saveAlert(alert);
             } catch (ClassNotFoundException | SQLException e) {

@@ -1,5 +1,7 @@
 package ir.amir.ingestor;
 
+import ir.amir.ingestor.config.FileWatcherConfig;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.*;
@@ -14,9 +16,9 @@ public class FileWatcherService extends Thread {
     private final Path directory;
     private final BlockingQueue<String> shareFilePath;
 
-    public FileWatcherService(String directory, BlockingQueue<String> shareFilePath) throws FileNotFoundException {
+    public FileWatcherService(FileWatcherConfig config, BlockingQueue<String> shareFilePath) throws FileNotFoundException {
         this.shouldEnd = false;
-        this.directory = Path.of(directory);
+        this.directory = Path.of(config.getDirectoryPath());
         this.shareFilePath = shareFilePath;
     }
 

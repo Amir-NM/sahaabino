@@ -1,5 +1,6 @@
 package ir.amir.ingestor;
 
+import ir.amir.ingestor.config.RecordExtractorConfig;
 import ir.amir.log.LogFormat;
 import ir.amir.log.Log;
 
@@ -17,8 +18,8 @@ public class RecordExtractorService extends Thread {
     private final BlockingQueue<String> shareFilePath;
     private final BlockingQueue<Log> shareLog;
 
-    public RecordExtractorService(LogFormat logFormat, BlockingQueue<String> shareFilePath, BlockingQueue<Log> shareLog) {
-        this.logFormat = logFormat;
+    public RecordExtractorService(RecordExtractorConfig config, BlockingQueue<String> shareFilePath, BlockingQueue<Log> shareLog) {
+        this.logFormat = new LogFormat(config.getSeparator(), config.getDateTimePattern(), config.getLogFormat());
         this.shareFilePath = shareFilePath;
         this.shareLog = shareLog;
         this.shouldEnd = false;
