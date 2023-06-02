@@ -1,6 +1,6 @@
 package ir.amir.ingestor.config;
 
-public class KafkaProducerConfig {
+public class KafkaConfig {
     private String kafkaConfPath;
     private String kafkaTopic;
 

@@ -1,4 +1,4 @@
-package ir.amir;
+package ir.amir.evaluator;
 
 import ir.amir.rule.FirstRuleType;
 import ir.amir.kafka.KafkaLogConsumer;
@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class RuleEvaluator {
+public class RuleEvaluatorMain {
     private static final String ruleEvaluatorConfDir = "src/main/resources/rule-evaluator.conf";
 
     public static void main(String[] args) {
