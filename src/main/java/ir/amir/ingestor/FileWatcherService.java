@@ -17,7 +17,7 @@ import java.util.concurrent.BlockingQueue;
 public class FileWatcherService extends Thread {
     private boolean shouldEnd;
     private final Path directory;
-    private BlockingQueue<String> shareFilePath;
+    private final BlockingQueue<String> shareFilePath;
 
     public FileWatcherService(String directory, BlockingQueue<String> shareFilePath) throws FileNotFoundException {
         this.shouldEnd = false;
