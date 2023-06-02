@@ -21,14 +21,13 @@ import java.util.concurrent.BlockingQueue;
  * this service receives logs from queue and extract alerts from them. then sends alerts to another queue.
  */
 public class AlertExtractorService extends Thread {
-    private final Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(AlertExtractorService.class);
     private boolean shouldEnd;
     private final List<Rule> rules;
     private final BlockingQueue<Log> shareLog;
     private final BlockingQueue<Alert> shareAlert;
 
     public AlertExtractorService(AlertExtractorConfig config, BlockingQueue<Log> shareLog, BlockingQueue<Alert> shareAlert) {
-        this.logger = LoggerFactory.getLogger(this.getClass());
         this.shareLog = shareLog;
         this.shareAlert = shareAlert;
         this.rules = new ArrayList<>();
@@ -45,13 +44,13 @@ public class AlertExtractorService extends Thread {
     }
 
     public void run() {
-        this.logger.info("AlertExtractorService running...");
+        logger.info("AlertExtractorService running...");
         while (!this.shouldEnd || !this.shareLog.isEmpty()) {
             Log log = null;
             try {
                 log = this.shareLog.take();
             } catch (InterruptedException e) {
-                this.logger.warn("Thread is interrupted.", e);
+                logger.warn("Thread is interrupted.", e);
                 this.shouldEnd = true;
                 Thread.currentThread().interrupt();
             }
@@ -63,7 +62,7 @@ public class AlertExtractorService extends Thread {
                     try {
                         this.shareAlert.put(alert);
                     } catch (InterruptedException e) {
-                        this.logger.warn("Thread is interrupted.", e);
+                        logger.warn("Thread is interrupted.", e);
                         this.shouldEnd = true;
                         Thread.currentThread().interrupt();
                     }

@@ -21,7 +21,7 @@ import java.util.concurrent.BlockingQueue;
  * this service consumes logs from kafka topic and sends them to queue.
  */
 public class KafkaConsumerService extends Thread {
-    private final Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(KafkaConsumerService.class);
     private boolean shouldEnd;
     private final Consumer<Integer, String> consumer;
     private final String topic;
@@ -29,7 +29,6 @@ public class KafkaConsumerService extends Thread {
     private final BlockingQueue<Log> shareLog;
 
     public KafkaConsumerService(KafkaConfig config, BlockingQueue<Log> shareLog) {
-        this.logger = LoggerFactory.getLogger(this.getClass());
         this.shareLog = shareLog;
         Properties props;
         try {
@@ -56,7 +55,7 @@ public class KafkaConsumerService extends Thread {
                     this.shareLog.put(log);
                 }
             } catch (InterruptedException e) {
-                this.logger.warn("Thread is interrupted.", e);
+                logger.warn("Thread is interrupted.", e);
                 this.shouldEnd = true;
                 Thread.currentThread().interrupt();
             }

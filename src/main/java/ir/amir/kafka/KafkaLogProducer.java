@@ -13,18 +13,17 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 public class KafkaLogProducer {
-    private final Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(KafkaLogProducer.class);
     private final Producer<Integer, String> producer;
     private final String topic;
     private int producedCount;
     private final Gson gson;
 
     public KafkaLogProducer(String propsDir, String topic) throws IOException {
-        this.logger = LoggerFactory.getLogger(this.getClass());
         try {
             this.producer = new KafkaProducer<>(KafkaConfigLoader.getInstance().loadProps(propsDir));
         } catch (IOException e) {
-            this.logger.error("Could not load properties file.");
+            logger.error("Could not load properties file.");
             throw e;
         }
         this.topic = topic;
@@ -44,6 +43,6 @@ public class KafkaLogProducer {
                         logger.info("Produced log: " + logString);
                 });
         this.producedCount++;
-        this.logger.trace("log produced to kafka: " + log);
+        logger.trace("log produced to kafka: " + log);
     }
 }

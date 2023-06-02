@@ -9,12 +9,11 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 
 public class ThirdTypeRule extends DurationBasedRule {
-    private final Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(ThirdTypeRule.class);
     private final int logCreationRateLimit;
 
     public ThirdTypeRule(ThirdRuleTypeConfig config) {
         super(config.getName(), config.getDescription(), config.getDuration());
-        this.logger = LoggerFactory.getLogger(this.getClass());
         this.logCreationRateLimit = config.getLogCreationRateLimit();
     }
 
@@ -29,7 +28,7 @@ public class ThirdTypeRule extends DurationBasedRule {
         ArrayList<Log> logs = this.componentsRecentLogs.get(log.getComponentName());
 
         if(logs.size() / this.duration >= this.logCreationRateLimit) {
-            this.logger.info("Third type log created.");
+            logger.info("Third type log created.");
             return new Alert(addTotalCreatedAlertsCount(), this.ruleName, log.getComponentName(),
                     this.ruleDescription + " | current log creation rate: " + logs.size() / this.duration +
                             " | last log message: " + log.getMsg());

@@ -16,7 +16,7 @@ import java.util.concurrent.BlockingQueue;
  * this service receives alerts from queue and saves them to database.
  */
 public class DatabaseSaverService extends Thread {
-    private final Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseSaverService.class);
     private boolean shouldEnd;
     private final String databaseURL;
     private final String databaseUser;
@@ -24,7 +24,6 @@ public class DatabaseSaverService extends Thread {
     private final BlockingQueue<Alert> shareAlert;
 
     public DatabaseSaverService(DatabaseSaverConfig config, BlockingQueue<Alert> shareAlert) {
-        this.logger = LoggerFactory.getLogger(this.getClass());
         this.shareAlert = shareAlert;
         this.databaseURL = config.getDatabaseURL();
         this.databaseUser = config.getDatabaseUsername();
@@ -38,7 +37,7 @@ public class DatabaseSaverService extends Thread {
             try {
                 alert = this.shareAlert.take();
             } catch (InterruptedException e) {
-                this.logger.warn("Thread is interrupted.", e);
+                logger.warn("Thread is interrupted.", e);
                 this.shouldEnd = true;
                 Thread.currentThread().interrupt();
             }
@@ -54,7 +53,7 @@ public class DatabaseSaverService extends Thread {
                 preparedStatement.execute();
                 preparedStatement.close();
                 connection.close();
-                this.logger.info("Alert saved to database.");
+                logger.info("Alert saved to database.");
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

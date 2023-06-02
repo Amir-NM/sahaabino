@@ -16,14 +16,13 @@ import java.util.concurrent.BlockingQueue;
  * this service receives files path from queue and processes files to extract records and sends records to another queue.
  */
 public class RecordExtractorService extends Thread {
-    private final Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(RecordExtractorService.class);
     private boolean shouldEnd;
     private final LogFormat logFormat;
     private final BlockingQueue<String> shareFilePath;
     private final BlockingQueue<Log> shareLog;
 
     public RecordExtractorService(RecordExtractorConfig config, BlockingQueue<String> shareFilePath, BlockingQueue<Log> shareLog) {
-        this.logger = LoggerFactory.getLogger(this.getClass());
         this.logFormat = new LogFormat(config.getSeparator(), config.getDateTimePattern(), config.getLogFormat());
         this.shareFilePath = shareFilePath;
         this.shareLog = shareLog;
@@ -31,7 +30,7 @@ public class RecordExtractorService extends Thread {
     }
 
     public void run() {
-        this.logger.info("RecordExtractorService running...");
+        logger.info("RecordExtractorService running...");
         while (!this.shouldEnd || !this.shareFilePath.isEmpty()) {
             File logFile = this.getLogFile();
 
@@ -40,7 +39,7 @@ public class RecordExtractorService extends Thread {
             this.extractLogs(sc, logFile);
 
             if (!logFile.delete()) {
-                this.logger.warn("Could not delete file: " + logFile.getName());
+                logger.warn("Could not delete file: " + logFile.getName());
             }
         }
     }
@@ -49,9 +48,9 @@ public class RecordExtractorService extends Thread {
         String filePath = "";
         try {
             filePath = this.shareFilePath.take();
-            this.logger.info("File received: " + filePath);
+            logger.info("File received: " + filePath);
         } catch (InterruptedException e) {
-            this.logger.warn("Thread is interrupted.");
+            logger.warn("Thread is interrupted.");
             this.shouldEnd = true;
             Thread.currentThread().interrupt();
         }
@@ -63,7 +62,7 @@ public class RecordExtractorService extends Thread {
         try {
             sc = new Scanner(logFile);
         } catch (FileNotFoundException e) {
-            this.logger.error("Could not open file.");
+            logger.error("Could not open file.");
             throw new RuntimeException(e);
         }
         return sc;
@@ -72,11 +71,11 @@ public class RecordExtractorService extends Thread {
     public void extractLogs(Scanner sc, File logFile) {
         while (sc.hasNext()) {
             Log log = this.logFormat.formLog(logFile.getName().split("-")[0], sc.nextLine());
-            this.logger.trace("Log created: " + log);
+            logger.trace("Log created: " + log);
             try {
                 this.shareLog.put(log);
             } catch (InterruptedException e) {
-                this.logger.warn("Thread is interrupted.");
+                logger.warn("Thread is interrupted.");
                 this.shouldEnd = true;
                 Thread.currentThread().interrupt();
             }

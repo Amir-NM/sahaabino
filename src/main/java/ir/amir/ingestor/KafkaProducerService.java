@@ -14,13 +14,12 @@ import java.util.concurrent.BlockingQueue;
  * this service receives records from queue and produces them to kafka topic.
  */
 public class KafkaProducerService extends Thread {
-    private final Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(KafkaProducerService.class);
     private boolean shouldEnd;
     private final BlockingQueue<Log> shareLog;
     private final KafkaLogProducer kafkaLogProducer;
 
     public KafkaProducerService(KafkaConfig config, BlockingQueue<Log> shareLog) throws IOException {
-        this.logger = LoggerFactory.getLogger(this.getClass());
         this.shareLog = shareLog;
         try {
             this.kafkaLogProducer = new KafkaLogProducer(config.getKafkaConfPath(), config.getKafkaTopic());
@@ -32,13 +31,13 @@ public class KafkaProducerService extends Thread {
     }
 
     public void run() {
-        this.logger.info("KafkaProducerService running...");
+        logger.info("KafkaProducerService running...");
         while (!this.shouldEnd || !this.shareLog.isEmpty()) {
             Log log = null;
             try {
                 log = this.shareLog.take();
             } catch (InterruptedException e) {
-                this.logger.warn("Thread is interrupted.");
+                logger.warn("Thread is interrupted.");
                 this.shouldEnd = true;
                 Thread.currentThread().interrupt();
             }

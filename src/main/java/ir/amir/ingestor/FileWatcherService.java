@@ -13,25 +13,24 @@ import java.util.concurrent.BlockingQueue;
  * this service watches the specified directory to sends new files path in its queue.
  */
 public class FileWatcherService extends Thread {
-    private final Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(FileWatcherService.class);
     private boolean shouldEnd;
     private final Path directory;
     private final BlockingQueue<String> shareFilePath;
 
     public FileWatcherService(FileWatcherConfig config, BlockingQueue<String> shareFilePath) {
-        this.logger = LoggerFactory.getLogger(this.getClass());
         this.shouldEnd = false;
         this.directory = Path.of(config.getDirectoryPath());
         this.shareFilePath = shareFilePath;
     }
 
     public void run() {
-        this.logger.info("FileWatcherService running...");
+        logger.info("FileWatcherService running...");
         this.sendExistingFiles();
 
         WatchKey watchKey = this.getWatchkey();
 
-        this.logger.info("Watching for new files...");
+        logger.info("Watching for new files...");
 
         this.watchDirectory(watchKey);
     }
@@ -40,10 +39,10 @@ public class FileWatcherService extends Thread {
         try {
             for (String logFileDir : Objects.requireNonNull(this.directory.toFile().list())) {
                 this.shareFilePath.put(logFileDir);
-                this.logger.trace("File path sent: " + logFileDir);
+                logger.trace("File path sent: " + logFileDir);
             }
         } catch (InterruptedException e) {
-            this.logger.error("thread is interrupted.", e);
+            logger.error("thread is interrupted.", e);
             this.shouldEnd = true;
             Thread.currentThread().interrupt();
         }
@@ -56,7 +55,7 @@ public class FileWatcherService extends Thread {
             watchService = FileSystems.getDefault().newWatchService();
             watchKey = this.directory.register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
         } catch (IOException e) {
-            this.logger.error("Could not set watch key for directory");
+            logger.error("Could not set watch key for directory");
             throw new RuntimeException(e);
         }
         return watchKey;
@@ -69,10 +68,10 @@ public class FileWatcherService extends Thread {
                     WatchEvent<Path> pathEvent = (WatchEvent<Path>) event;
                     Path fileName = pathEvent.context();
                     this.shareFilePath.put(this.directory + "/" + fileName);
-                    this.logger.trace("File path sent: " + this.directory + "/" + fileName);
+                    logger.trace("File path sent: " + this.directory + "/" + fileName);
                 }
             } catch (InterruptedException e) {
-                this.logger.warn("Thread is interrupted.", e);
+                logger.warn("Thread is interrupted.", e);
                 this.shouldEnd = true;
                 Thread.currentThread().interrupt();
             }
