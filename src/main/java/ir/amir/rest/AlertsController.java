@@ -1,6 +1,6 @@
-package api;
+package ir.amir.rest;
 
-import api.database.Alert;
+import ir.amir.rest.database.Alert;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

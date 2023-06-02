@@ -1,8 +1,8 @@
-package kafka;
+package ir.amir.kafka;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import log.Log;
+import ir.amir.log.Log;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;

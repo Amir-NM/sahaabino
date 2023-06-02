@@ -1,6 +1,4 @@
-package api.database;
-
-import api.database.Alert;
+package ir.amir.rest.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -1,4 +1,4 @@
-package log;
+package ir.amir.log;
 
 
 import java.time.LocalDateTime;

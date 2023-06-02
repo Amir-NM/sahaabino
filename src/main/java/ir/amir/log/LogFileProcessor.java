@@ -1,6 +1,6 @@
-package log;
+package ir.amir.log;
 
-import kafka.KafkaLogProducer;
+import ir.amir.kafka.KafkaLogProducer;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package api.database;
+package ir.amir.rest.database;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

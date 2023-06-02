@@ -1,9 +1,9 @@
-package kafka;
+package ir.amir.kafka;
 
-import rule.FirstRuleType;
+import ir.amir.rule.FirstRuleType;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import log.Log;
+import ir.amir.log.Log;
 import org.apache.kafka.clients.consumer.*;
 
 import java.io.IOException;

@@ -1,6 +1,6 @@
-package api;
+package ir.amir.rest;
 
-import api.database.Alert;
+import ir.amir.rest.database.Alert;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package kafka;
+package ir.amir.kafka;
 
 import com.google.gson.*;
 

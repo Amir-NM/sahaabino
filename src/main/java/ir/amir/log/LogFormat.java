@@ -1,4 +1,4 @@
-package log;
+package ir.amir.log;
 
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
@@ -27,9 +27,5 @@ public class LogFormat {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(this.datetimePattern);
         LocalDateTime dateTime = LocalDateTime.parse(logArray[this.datetimeIndex], formatter);
         return new Log(componentName, dateTime, logArray[this.typeIndex], logArray[this.msgIndex]);
-    }
-
-    public String getDatetimePattern() {
-        return datetimePattern;
     }
 }

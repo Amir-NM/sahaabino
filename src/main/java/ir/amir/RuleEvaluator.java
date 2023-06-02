@@ -1,6 +1,8 @@
-import rule.FirstRuleType;
-import kafka.KafkaLogConsumer;
-import api.database.AlertSaver;
+package ir.amir;
+
+import ir.amir.rule.FirstRuleType;
+import ir.amir.kafka.KafkaLogConsumer;
+import ir.amir.rest.database.AlertSaver;
 
 import java.io.File;
 import java.io.IOException;
