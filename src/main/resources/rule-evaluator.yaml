@@ -1,0 +1,23 @@
+kafkaConfig:
+  kafkaConfPath: "src/main/resources/kafka.conf"
+  kafkaTopic: "logs"
+alertExtractorConfig:
+  firstRuleTypeConfigs:
+    - name: "errors"
+      description: "all errors"
+      logsType: "ERROR"
+  secondRuleTypeConfigs:
+    - name: "2 errors in 1 min"
+      description: "there are more than 2 errors in 1 minutes"
+      logsType: "ERROR"
+      duration: 1
+      logCountLimit: 2
+  thirdRuleTypeConfigs:
+    - name: "3 lpm"
+      description: "log creation rate 3lpm or more"
+      duration: 1
+      logCreationRateLimit: 3
+databaseSaverConfig:
+  databaseURL: "jdbc:mysql://localhost:3306/alerts_db"
+  databaseUsername: "root"
+  databasePassword: "123456789"
