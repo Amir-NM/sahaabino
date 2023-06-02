@@ -4,6 +4,6 @@ recordExtractorConfig:
   separator: "--"
   dateTimePattern: "yyyy-MM-dd HH:mm:ss"
   logFormat: "DATETIME--TYPE--MSG"
-kafkaProducerConfig:
+kafkaConfig:
   kafkaConfPath: "src/main/resources/kafka.conf"
   kafkaTopic: "logs"

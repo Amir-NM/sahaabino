@@ -5,24 +5,30 @@ import ir.amir.evaluator.config.rules.FirstRuleTypeConfig;
 import ir.amir.evaluator.config.rules.SecondRuleTypeConfig;
 import ir.amir.evaluator.config.rules.ThirdRuleTypeConfig;
 import ir.amir.log.Log;
-import ir.amir.rest.database.Alert;
-import ir.amir.rule.FirstTypeRule;
-import ir.amir.rule.Rule;
-import ir.amir.rule.SecondTypeRule;
-import ir.amir.rule.ThirdTypeRule;
+import ir.amir.rest.Alert;
+import ir.amir.evaluator.rule.FirstTypeRule;
+import ir.amir.evaluator.rule.Rule;
+import ir.amir.evaluator.rule.SecondTypeRule;
+import ir.amir.evaluator.rule.ThirdTypeRule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 public class AlertExtractorService extends Thread {
+    private final Logger logger;
     private boolean shouldEnd;
-    private List<Rule> rules;
-    private BlockingQueue<Log> shareLog;
-    private BlockingQueue<Alert> shareAlert;
+    private final List<Rule> rules;
+    private final BlockingQueue<Log> shareLog;
+    private final BlockingQueue<Alert> shareAlert;
 
     public AlertExtractorService(AlertExtractorConfig config, BlockingQueue<Log> shareLog, BlockingQueue<Alert> shareAlert) {
+        this.logger = LoggerFactory.getLogger(this.getClass());
         this.shareLog = shareLog;
         this.shareAlert = shareAlert;
+        this.rules = new ArrayList<>();
         for(FirstRuleTypeConfig ruleConfig : config.getFirstRuleTypeConfigs()) {
             rules.add(new FirstTypeRule(ruleConfig));
         }
@@ -36,12 +42,13 @@ public class AlertExtractorService extends Thread {
     }
 
     public void run() {
+        this.logger.info("AlertExtractorService running...");
         while (!this.shouldEnd || !this.shareLog.isEmpty()) {
             Log log = null;
             try {
                 log = this.shareLog.take();
             } catch (InterruptedException e) {
-                // todo: log
+                this.logger.warn("Thread is interrupted.", e);
                 this.shouldEnd = true;
                 Thread.currentThread().interrupt();
             }
@@ -51,9 +58,9 @@ public class AlertExtractorService extends Thread {
 
                 if (alert != null) {
                     try {
-                        shareAlert.put(alert);
+                        this.shareAlert.put(alert);
                     } catch (InterruptedException e) {
-                        // todo: log
+                        this.logger.warn("Thread is interrupted.", e);
                         this.shouldEnd = true;
                         Thread.currentThread().interrupt();
                     }

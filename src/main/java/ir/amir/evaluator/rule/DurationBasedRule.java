@@ -1,7 +1,6 @@
-package ir.amir.rule;
+package ir.amir.evaluator.rule;
 
 import ir.amir.log.Log;
-import ir.amir.rest.database.AlertSaver;
 
 import java.util.ArrayList;
 import java.util.HashMap;

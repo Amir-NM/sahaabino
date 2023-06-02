@@ -1,7 +1,5 @@
 package ir.amir.ingestor.config;
 
-import org.apache.kafka.common.protocol.types.Field;
-
 public class RecordExtractorConfig {
     private String separator;
     private String dateTimePattern;

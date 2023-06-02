@@ -1,4 +1,4 @@
-package ir.amir.rest.database;
+package ir.amir.rest;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +15,6 @@ import java.time.Instant;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-//public class Alert {
 public class Alert implements Comparable<Alert>{
 
     @Id

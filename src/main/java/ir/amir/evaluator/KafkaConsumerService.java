@@ -7,6 +7,8 @@ import ir.amir.kafka.KafkaConfigLoader;
 import ir.amir.kafka.LocalDateTimeTypeAdapter;
 import ir.amir.log.Log;
 import org.apache.kafka.clients.consumer.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -16,6 +18,7 @@ import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 
 public class KafkaConsumerService extends Thread {
+    private final Logger logger;
     private boolean shouldEnd;
     private final Consumer<Integer, String> consumer;
     private final String topic;
@@ -23,6 +26,7 @@ public class KafkaConsumerService extends Thread {
     private final BlockingQueue<Log> shareLog;
 
     public KafkaConsumerService(KafkaConfig config, BlockingQueue<Log> shareLog) {
+        this.logger = LoggerFactory.getLogger(this.getClass());
         this.shareLog = shareLog;
         Properties props;
         try {
@@ -38,17 +42,18 @@ public class KafkaConsumerService extends Thread {
     }
 
     public void run() {
+
         this.consumer.subscribe(Collections.singletonList(this.topic));
         while (!this.shouldEnd) {
             ConsumerRecords<Integer, String> records = consumer.poll(Duration.ofMillis(100));
             try {
                 for (ConsumerRecord<Integer, String> record : records) {
-                    System.out.println("Consumed log: " + record.value());
+                    logger.info("Consumed log: " + record.value());
                     Log log = this.gson.fromJson(record.value(), Log.class);
                     this.shareLog.put(log);
                 }
             } catch (InterruptedException e) {
-                // todo:log
+                this.logger.warn("Thread is interrupted.", e);
                 this.shouldEnd = true;
                 Thread.currentThread().interrupt();
             }

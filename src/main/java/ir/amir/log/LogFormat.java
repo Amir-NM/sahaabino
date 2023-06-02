@@ -1,6 +1,5 @@
 package ir.amir.log;
 
-import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 

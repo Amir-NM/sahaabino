@@ -24,7 +24,7 @@ public class KafkaLogProducer {
         try {
             this.producer = new KafkaProducer<>(KafkaConfigLoader.getInstance().loadProps(propsDir));
         } catch (IOException e) {
-            logger.error("Could not load properties file.");
+            this.logger.error("Could not load properties file.");
             throw e;
         }
         this.topic = topic;
@@ -44,6 +44,6 @@ public class KafkaLogProducer {
                         logger.info("Produced log: " + logString);
                 });
         this.producedCount++;
-        logger.trace("log produced to kafka: " + log);
+        this.logger.trace("log produced to kafka: " + log);
     }
 }

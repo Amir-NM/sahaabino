@@ -1,18 +1,21 @@
-package ir.amir.rule;
+package ir.amir.evaluator.rule;
 
 import ir.amir.evaluator.config.rules.SecondRuleTypeConfig;
 import ir.amir.log.Log;
-import ir.amir.rest.database.Alert;
-import ir.amir.rest.database.AlertSaver;
+import ir.amir.rest.Alert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
 public class SecondTypeRule extends DurationBasedRule {
+    private final Logger logger;
     private final String logsType;
     private final int logCountLimit;
 
     public SecondTypeRule(SecondRuleTypeConfig config) {
         super(config.getName(), config.getDescription(), config.getDuration());
+        this.logger = LoggerFactory.getLogger(this.getClass());
         this.logsType = config.getLogsType();
         this.logCountLimit = config.getLogCountLimit();
     }
@@ -32,6 +35,7 @@ public class SecondTypeRule extends DurationBasedRule {
         ArrayList<Log> logs = this.componentsRecentLogs.get(log.getComponentName());
 
         if(logs.size() >= this.logCountLimit) {
+            this.logger.info("Second type alert created.");
             return new Alert(addTotalCreatedAlertsCount(), this.ruleName, log.getComponentName(),
                     this.ruleDescription + " | log type: " + this.logsType + " | last log message: " + log.getMsg() +
                             " | second last log message: " + logs.get(logs.size() - 2).getMsg());

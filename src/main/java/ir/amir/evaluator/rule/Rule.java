@@ -1,7 +1,6 @@
-package ir.amir.rule;
+package ir.amir.evaluator.rule;
 
-import ir.amir.rest.database.Alert;
-import ir.amir.rest.database.AlertSaver;
+import ir.amir.rest.Alert;
 import ir.amir.log.Log;
 
 public abstract class Rule {

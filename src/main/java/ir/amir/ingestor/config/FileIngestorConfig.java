@@ -3,6 +3,7 @@ package ir.amir.ingestor.config;
 public class FileIngestorConfig {
     private FileWatcherConfig fileWatcherConfig;
     private RecordExtractorConfig recordExtractorConfig;
+    private KafkaConfig kafkaConfig;
 
     public FileWatcherConfig getFileWatcherConfig() {
         return fileWatcherConfig;
@@ -20,13 +21,11 @@ public class FileIngestorConfig {
         this.recordExtractorConfig = recordExtractorConfig;
     }
 
-    public KafkaConfig getKafkaProducerConfig() {
-        return kafkaProducerConfig;
+    public KafkaConfig getKafkaConfig() {
+        return kafkaConfig;
     }
 
-    public void setKafkaProducerConfig(KafkaConfig kafkaProducerConfig) {
-        this.kafkaProducerConfig = kafkaProducerConfig;
+    public void setKafkaConfig(KafkaConfig kafkaConfig) {
+        this.kafkaConfig = kafkaConfig;
     }
-
-    private KafkaConfig kafkaProducerConfig;
 }

@@ -1,11 +1,9 @@
 package ir.amir.ingestor;
 
-import com.mysql.cj.exceptions.ClosedOnExpiredPasswordException;
 import ir.amir.ingestor.config.FileWatcherConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.Objects;
@@ -28,12 +26,12 @@ public class FileWatcherService extends Thread {
     }
 
     public void run() {
-        logger.info("FileWatcherService running...");
+        this.logger.info("FileWatcherService running...");
         this.sendExistingFiles();
 
         WatchKey watchKey = this.getWatchkey();
 
-        logger.info("Watching for new files...");
+        this.logger.info("Watching for new files...");
 
         this.watchDirectory(watchKey);
     }
@@ -42,10 +40,10 @@ public class FileWatcherService extends Thread {
         try {
             for (String logFileDir : Objects.requireNonNull(this.directory.toFile().list())) {
                 this.shareFilePath.put(logFileDir);
-                logger.trace("File path sent: " + logFileDir);
+                this.logger.trace("File path sent: " + logFileDir);
             }
         } catch (InterruptedException e) {
-            logger.error("thread is interrupted.", e);
+            this.logger.error("thread is interrupted.", e);
             this.shouldEnd = true;
             Thread.currentThread().interrupt();
         }
@@ -58,7 +56,7 @@ public class FileWatcherService extends Thread {
             watchService = FileSystems.getDefault().newWatchService();
             watchKey = this.directory.register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
         } catch (IOException e) {
-            logger.error("Could not set watch key for directory");
+            this.logger.error("Could not set watch key for directory");
             throw new RuntimeException(e);
         }
         return watchKey;
@@ -71,10 +69,10 @@ public class FileWatcherService extends Thread {
                     WatchEvent<Path> pathEvent = (WatchEvent<Path>) event;
                     Path fileName = pathEvent.context();
                     this.shareFilePath.put(this.directory + "/" + fileName);
-                    logger.trace("File path sent: " + this.directory + "/" + fileName);
+                    this.logger.trace("File path sent: " + this.directory + "/" + fileName);
                 }
             } catch (InterruptedException e) {
-                logger.warn("Thread is interrupted.", e);
+                this.logger.warn("Thread is interrupted.", e);
                 this.shouldEnd = true;
                 Thread.currentThread().interrupt();
             }

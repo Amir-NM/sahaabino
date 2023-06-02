@@ -28,13 +28,12 @@ public class FileIngestorMain {
         BlockingQueue<String> shareFilesPath = new ArrayBlockingQueue<>(10_000);
         BlockingQueue<Log> shareLog = new ArrayBlockingQueue<>(10_000);
 
-        FileWatcherService fileWatcherService;
 
-        fileWatcherService = new FileWatcherService(config.getFileWatcherConfig(), shareFilesPath);
+        FileWatcherService fileWatcherService = new FileWatcherService(config.getFileWatcherConfig(), shareFilesPath);
         RecordExtractorService recordExtractorService = new RecordExtractorService(config.getRecordExtractorConfig(), shareFilesPath, shareLog);
         KafkaProducerService kafkaProducerService;
         try {
-            kafkaProducerService = new KafkaProducerService(config.getKafkaProducerConfig(), shareLog);
+            kafkaProducerService = new KafkaProducerService(config.getKafkaConfig(), shareLog);
         } catch (IOException e) {
             logger.error("Could not instantiate KafkaProducerService.");
             throw new RuntimeException(e);

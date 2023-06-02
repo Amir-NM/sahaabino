@@ -1,41 +1,41 @@
 package ir.amir.evaluator;
 
-import ir.amir.rule.FirstRuleType;
-import ir.amir.kafka.KafkaLogConsumer;
-import ir.amir.rest.database.AlertSaver;
-import ir.amir.rule.Rule;
-import ir.amir.rule.SecondRuleType;
-import ir.amir.rule.ThirdRuleType;
+import ir.amir.evaluator.config.RuleEvaluatorConfig;
+import ir.amir.ingestor.FileIngestorMain;
+import ir.amir.log.Log;
+import ir.amir.rest.Alert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.io.InputStream;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class RuleEvaluatorMain {
-    private static final String ruleEvaluatorConfDir = "src/main/resources/rule-evaluator.conf";
+    private static final String ruleEvaluatorConfDir = "rule-evaluator.yaml";
 
     public static void main(String[] args) {
-        AlertSaver alertSaver = new AlertSaver("jdbc:mysql://localhost:3306/alerts_db", "root", "123456789");
-        try {
-            Scanner sc = new Scanner(new File(ruleEvaluatorConfDir));
-            String kafkaConfDir = sc.nextLine();
-            String topic = sc.nextLine();
-            ArrayList<Rule> rules = new ArrayList<>();
-            while (sc.hasNext()){
-                String[] ruleParams = sc.nextLine().split("-");
-                switch (ruleParams[0]) {
-                    case "1" -> rules.add(new FirstRuleType(ruleParams[1], ruleParams[2], ruleParams[3], alertSaver));
-                    case "2" -> rules.add(new SecondRuleType(ruleParams[1], ruleParams[2], ruleParams[3],
-                            Float.parseFloat(ruleParams[4]), Integer.parseInt(ruleParams[5]), alertSaver));
-                    case "3" -> rules.add(new ThirdRuleType(ruleParams[1], ruleParams[2], Float.parseFloat(ruleParams[3]),
-                            Integer.parseInt(ruleParams[4]), alertSaver));
-                }
-            }
-            KafkaLogConsumer kafkaLogConsumer = new KafkaLogConsumer(kafkaConfDir, topic, rules.toArray(new Rule[0]));
-            kafkaLogConsumer.consume();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        Yaml yaml = new Yaml(new Constructor(RuleEvaluatorConfig.class));
+        InputStream inputStream = FileIngestorMain.class.getClassLoader().getResourceAsStream(ruleEvaluatorConfDir);
+        RuleEvaluatorConfig config = yaml.load(inputStream);
+
+        BlockingQueue<Log> shareLog = new ArrayBlockingQueue<>(10_000);
+        BlockingQueue<Alert> shareAlert = new ArrayBlockingQueue<>(10_000);
+
+        KafkaConsumerService kafkaConsumerService = new KafkaConsumerService(config.getKafkaConfig(), shareLog);
+        AlertExtractorService alertExtractorService = new AlertExtractorService(config.getAlertExtractorConfig(), shareLog, shareAlert);
+        DatabaseSaverService databaseSaverService = new DatabaseSaverService(config.getDatabaseSaverConfig(), shareAlert);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            kafkaConsumerService.interrupt();
+            alertExtractorService.interrupt();
+            databaseSaverService.interrupt();
+        }));
+
+        kafkaConsumerService.start();
+        alertExtractorService.start();
+        databaseSaverService.start();
     }
 }
