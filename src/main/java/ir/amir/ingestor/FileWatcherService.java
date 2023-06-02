@@ -29,17 +29,29 @@ public class FileWatcherService extends Thread {
 
     public void run() {
         logger.info("FileWatcherService running...");
-        for (String logFileDir : Objects.requireNonNull(this.directory.toFile().list())) {
-            try {
+        this.sendExistingFiles();
+
+        WatchKey watchKey = this.getWatchkey();
+
+        logger.info("Watching for new files...");
+
+        this.watchDirectory(watchKey);
+    }
+
+    private void sendExistingFiles() {
+        try {
+            for (String logFileDir : Objects.requireNonNull(this.directory.toFile().list())) {
                 this.shareFilePath.put(logFileDir);
                 logger.trace("File path sent: " + logFileDir);
-            } catch (InterruptedException e) {
-                logger.error("thread is interrupted.", e);
-                this.shouldEnd = true;
-                Thread.currentThread().interrupt();
             }
+        } catch (InterruptedException e) {
+            logger.error("thread is interrupted.", e);
+            this.shouldEnd = true;
+            Thread.currentThread().interrupt();
         }
+    }
 
+    private WatchKey getWatchkey() {
         WatchKey watchKey;
         WatchService watchService;
         try {
@@ -49,9 +61,10 @@ public class FileWatcherService extends Thread {
             logger.error("Could not set watch key for directory");
             throw new RuntimeException(e);
         }
+        return watchKey;
+    }
 
-        logger.info("Watching for new files...");
-
+    private void watchDirectory(WatchKey watchKey) {
         while(!this.shouldEnd) {
             try {
                 for(WatchEvent<?> event : watchKey.pollEvents()) {

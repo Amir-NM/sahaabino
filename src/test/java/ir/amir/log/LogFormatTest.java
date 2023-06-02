@@ -15,6 +15,5 @@ public class LogFormatTest {
                 "ERROR", "massage 1");
         Assertions.assertEquals(expected.toString(), log.toString());
         Assertions.assertEquals(0, log.getTimeDifference(expected));
-
     }
 }

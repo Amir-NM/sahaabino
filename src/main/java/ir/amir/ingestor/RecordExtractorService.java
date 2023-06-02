@@ -33,37 +33,51 @@ public class RecordExtractorService extends Thread {
     public void run() {
         logger.info("RecordExtractorService running...");
         while (!this.shouldEnd || !this.shareFilePath.isEmpty()) {
-            String filePath = "";
+            File logFile = this.getLogFile();
+
+            Scanner sc = this.getScanner(logFile);
+
+            this.extractLogs(sc, logFile);
+
+            logFile.delete();
+        }
+    }
+
+    public File getLogFile() {
+        String filePath = "";
+        try {
+            filePath = this.shareFilePath.take();
+            logger.info("File received: " + filePath);
+        } catch (InterruptedException e) {
+            logger.warn("Thread is interrupted.");
+            this.shouldEnd = true;
+            Thread.currentThread().interrupt();
+        }
+        return new File(filePath);
+    }
+
+    public Scanner getScanner(File logFile) {
+        Scanner sc;
+        try {
+            sc = new Scanner(logFile);
+        } catch (FileNotFoundException e) {
+            logger.error("Could not open file.");
+            throw new RuntimeException(e);
+        }
+        return sc;
+    }
+
+    public void extractLogs(Scanner sc, File logFile) {
+        while (sc.hasNext()) {
+            Log log = this.logFormat.formLog(logFile.getName().split("-")[0], sc.nextLine());
+            logger.trace("Log created: " + log);
             try {
-                filePath = this.shareFilePath.take();
-                logger.info("File received: " + filePath);
+                this.shareLog.put(log);
             } catch (InterruptedException e) {
                 logger.warn("Thread is interrupted.");
                 this.shouldEnd = true;
                 Thread.currentThread().interrupt();
             }
-            File logFile = new File(filePath);
-            Scanner sc;
-
-            try {
-                sc = new Scanner(logFile);
-            } catch (FileNotFoundException e) {
-                logger.error("Could not open file.");
-                throw new RuntimeException(e);
-            }
-
-            while (sc.hasNext()) {
-                Log log = this.logFormat.formLog(logFile.getName().split("-")[0], sc.nextLine());
-                logger.trace("Log created: " + log);
-                try {
-                    this.shareLog.put(log);
-                } catch (InterruptedException e) {
-                    logger.warn("Thread is interrupted.");
-                    this.shouldEnd = true;
-                    Thread.currentThread().interrupt();
-                }
-            }
-            logFile.delete();
         }
     }
 }
