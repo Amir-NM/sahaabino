@@ -1,4 +1,4 @@
-package kafkaHandler;
+package kafka;
 
 import java.io.FileInputStream;
 import java.io.IOException;

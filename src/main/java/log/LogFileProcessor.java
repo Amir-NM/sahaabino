@@ -1,6 +1,6 @@
-package logFilesHandler;
+package log;
 
-import kafkaHandler.KafkaLogProducer;
+import kafka.KafkaLogProducer;
 
 import java.io.File;
 import java.io.IOException;

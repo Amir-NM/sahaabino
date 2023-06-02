@@ -1,7 +1,9 @@
-package kafkaHandler;
+package kafka;
 
+import rule.FirstRuleType;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import log.Log;
 import org.apache.kafka.clients.consumer.*;
 
 import java.io.IOException;
@@ -13,18 +15,18 @@ import java.util.Properties;
 public class KafkaLogConsumer {
     private final Consumer<Integer, String> consumer;
     private final String topic;
-    private Gson gson;
+    private final Gson gson;
 
-    public KafkaLogConsumer(String propsDir, String topic) throws IOException {
+    private final FirstRuleType[] alertRules;
+
+    public KafkaLogConsumer(String propsDir, String topic, FirstRuleType[] alertRules) throws IOException {
         Properties props = KafkaConfigLoader.getInstance().loadProps(propsDir);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "kafka-java-getting-started");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         this.consumer = new KafkaConsumer<>(props);
         this.topic = topic;
-    }
-
-    public void createGson(String pattern) {
-        this.gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter(pattern)).create();
+        this.alertRules = alertRules;
+        this.gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter("yyyy-MM-dd HH:mm:ss")).create();
     }
 
     public void consume() {
@@ -32,7 +34,11 @@ public class KafkaLogConsumer {
         while (true) {
             ConsumerRecords<Integer, String> records = consumer.poll(Duration.ofMillis(100));
             for (ConsumerRecord<Integer, String> record : records) {
-                //TODO
+                System.out.println("Consumed log: " + record.value());
+                Log log = this.gson.fromJson(record.value(), Log.class);
+                for(FirstRuleType alertRule : this.alertRules) {
+                    alertRule.processLog(log);
+                }
             }
         }
     }

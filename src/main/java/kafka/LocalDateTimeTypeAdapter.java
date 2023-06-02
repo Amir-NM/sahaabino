@@ -1,4 +1,4 @@
-package kafkaHandler;
+package kafka;
 
 import com.google.gson.*;
 

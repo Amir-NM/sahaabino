@@ -1,21 +1,18 @@
-package logFilesHandler;
+package log;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
 
 public class LogFormat {
     private final String separator;
     private final String datetimePattern;
     private int datetimeIndex, typeIndex, msgIndex;
 
-    public LogFormat(String confDir) throws FileNotFoundException {
-        Scanner sc = new Scanner(new File(confDir));
-        this.separator = sc.nextLine();
-        this.datetimePattern = sc.nextLine();
-        String[] format = sc.nextLine().split(this.separator);
+    public LogFormat(String separator, String datetimePattern, String logFormat) throws FileNotFoundException {
+        this.separator = separator;
+        this.datetimePattern = datetimePattern;
+        String[] format = logFormat.split(this.separator);
         for(int i = 0; i < format.length; i++) {
             switch (format[i]) {
                 case "DATETIME" -> this.datetimeIndex = i;
@@ -23,7 +20,6 @@ public class LogFormat {
                 case "MSG" -> this.msgIndex = i;
             }
         }
-        sc.close();
     }
 
     public Log formLog(String componentName, String logString) {

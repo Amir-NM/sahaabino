@@ -1,22 +1,19 @@
-package logFilesHandler;
+package log;
 
-import kafkaHandler.KafkaLogProducer;
+import kafka.KafkaLogProducer;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.Scanner;
 
 public class DirectoryMonitorer {
     private final LogFormat logFormat;
     private final Path directory;
     private final LogFileProcessor fileProcessor;
-    public DirectoryMonitorer(String confDir, String directory, KafkaLogProducer kafkaLogProducer) throws FileNotFoundException {
-        this.logFormat = new LogFormat(confDir);
+    public DirectoryMonitorer(String separator, String datetimePattern, String logFormat, String directory, KafkaLogProducer kafkaLogProducer) throws FileNotFoundException {
+        this.logFormat = new LogFormat(separator, datetimePattern, logFormat);
         this.directory = Path.of(directory);
         this.fileProcessor = new LogFileProcessor(kafkaLogProducer);
-        kafkaLogProducer.createGson(this.logFormat.getDatetimePattern());
     }
 
     public void monitor() throws IOException {
