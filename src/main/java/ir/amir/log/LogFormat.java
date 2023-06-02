@@ -9,7 +9,7 @@ public class LogFormat {
     private final String datetimePattern;
     private int datetimeIndex, typeIndex, msgIndex;
 
-    public LogFormat(String separator, String datetimePattern, String logFormat) throws FileNotFoundException {
+    public LogFormat(String separator, String datetimePattern, String logFormat) {
         this.separator = separator;
         this.datetimePattern = datetimePattern;
         String[] format = logFormat.split(this.separator);

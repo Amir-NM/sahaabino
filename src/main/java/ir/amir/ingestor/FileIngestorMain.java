@@ -2,10 +2,13 @@ package ir.amir.ingestor;
 
 import ir.amir.ingestor.config.FileIngestorConfig;
 import ir.amir.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -16,6 +19,8 @@ import java.util.concurrent.BlockingQueue;
 public class FileIngestorMain {
     private static final String ingestorConfPath = "file-ingestor.yaml";
     public static void main(String[] args) {
+        Logger logger = LoggerFactory.getLogger(FileIngestorMain.class);
+
         Yaml yaml = new Yaml(new Constructor(FileIngestorConfig.class));
         InputStream inputStream = FileIngestorMain.class.getClassLoader().getResourceAsStream(ingestorConfPath);
         FileIngestorConfig config = yaml.load(inputStream);
@@ -31,19 +36,15 @@ public class FileIngestorMain {
         try {
             kafkaProducerService = new KafkaProducerService(config.getKafkaProducerConfig(), shareLog);
         } catch (IOException e) {
-            // todo: log
+            logger.error("Could not instantiate KafkaProducerService.");
             throw new RuntimeException(e);
         }
 
-        Runtime.getRuntime().addShutdownHook(new Thread()
-        {
-            public void run()
-            {
-                fileWatcherService.interrupt();
-                recordExtractorService.interrupt();
-                kafkaProducerService.interrupt();
-            }
-        });
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            fileWatcherService.interrupt();
+            recordExtractorService.interrupt();
+            kafkaProducerService.interrupt();
+        }));
 
         fileWatcherService.start();
         recordExtractorService.start();

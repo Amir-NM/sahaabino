@@ -1,7 +1,10 @@
 package ir.amir.log;
 
 
+import org.apache.kafka.common.protocol.types.Field;
+
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class Log {
@@ -27,5 +30,13 @@ public class Log {
 
     public boolean isOfType(String type) {
         return Objects.equals(this.type, type);
+    }
+
+    public double getTimeDifference(Log log) {
+        return this.dateTime.until(log.dateTime, ChronoUnit.SECONDS) / 60.;
+    }
+
+    public String toString() {
+        return "component: " + this.componentName + ", type: " + this.type + ", message: " + this.msg;
     }
 }
