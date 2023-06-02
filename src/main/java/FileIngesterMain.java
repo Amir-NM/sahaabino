@@ -1,20 +1,23 @@
-import com.google.gson.Gson;
-import kafkaHandler.KafkaLogProducer;
-import logFilesHandler.DirectoryMonitorer;
-import org.apache.kafka.common.protocol.types.Field;
+import kafka.KafkaLogProducer;
+import log.DirectoryMonitorer;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class FileIngesterMain {
-    private static final String resourcesDir = "src/main/resources/";
-    private static final String kafkaConfName = "kafka.conf";
-    private static final String ingesterConfName = "file-ingester.conf";
-    private static final String logsDir = "logs-dir";
-    private static final String topic = "logs";
+    private static final String ingesterConfDir = "src/main/resources/file-ingester.conf";
     public static void main(String[] args) {
         try {
-            KafkaLogProducer kafkaLogProducer = new KafkaLogProducer(resourcesDir + kafkaConfName, topic);
-            DirectoryMonitorer monitorer = new DirectoryMonitorer(resourcesDir + ingesterConfName, resourcesDir + logsDir, kafkaLogProducer);
+            Scanner sc = new Scanner(new File(ingesterConfDir));
+            String logsDir = sc.nextLine();
+            String kafkaConfDir = sc.nextLine();
+            String topic = sc.nextLine();
+            String separator = sc.nextLine();
+            String datetimePattern = sc.nextLine();
+            String logFormat = sc.nextLine();
+            KafkaLogProducer kafkaLogProducer = new KafkaLogProducer(kafkaConfDir, topic);
+            DirectoryMonitorer monitorer = new DirectoryMonitorer(separator, datetimePattern, logFormat, logsDir, kafkaLogProducer);
             monitorer.monitor();
         } catch (IOException e) {
             throw new RuntimeException(e);
