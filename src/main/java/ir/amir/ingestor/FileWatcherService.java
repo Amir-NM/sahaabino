@@ -16,7 +16,7 @@ public class FileWatcherService extends Thread {
     private final Path directory;
     private final BlockingQueue<String> shareFilePath;
 
-    public FileWatcherService(FileWatcherConfig config, BlockingQueue<String> shareFilePath) throws FileNotFoundException {
+    public FileWatcherService(FileWatcherConfig config, BlockingQueue<String> shareFilePath) {
         this.shouldEnd = false;
         this.directory = Path.of(config.getDirectoryPath());
         this.shareFilePath = shareFilePath;

@@ -24,13 +24,8 @@ public class FileIngestorMain {
         BlockingQueue<Log> shareLog = new ArrayBlockingQueue<>(10_000);
 
         FileWatcherService fileWatcherService;
-        try {
-            fileWatcherService = new FileWatcherService(config.getFileWatcherConfig(), shareFilesPath);
-        } catch (FileNotFoundException e) {
-            // todo: log
-            throw new RuntimeException(e);
-        }
 
+        fileWatcherService = new FileWatcherService(config.getFileWatcherConfig(), shareFilesPath);
         RecordExtractorService recordExtractorService = new RecordExtractorService(config.getRecordExtractorConfig(), shareFilesPath, shareLog);
         KafkaProducerService kafkaProducerService;
         try {
@@ -39,6 +34,16 @@ public class FileIngestorMain {
             // todo: log
             throw new RuntimeException(e);
         }
+
+        Runtime.getRuntime().addShutdownHook(new Thread()
+        {
+            public void run()
+            {
+                fileWatcherService.interrupt();
+                recordExtractorService.interrupt();
+                kafkaProducerService.interrupt();
+            }
+        });
 
         fileWatcherService.start();
         recordExtractorService.start();
