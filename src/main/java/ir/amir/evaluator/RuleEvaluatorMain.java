@@ -4,8 +4,6 @@ import ir.amir.evaluator.config.RuleEvaluatorConfig;
 import ir.amir.ingestor.FileIngestorMain;
 import ir.amir.log.Log;
 import ir.amir.rest.Alert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
